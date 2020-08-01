@@ -13,26 +13,16 @@ const Thing = () => {
     const ref = useRef();
     useFrame(() => (ref.current.rotation.z += 0.01));
     return (
-      <mesh
-        ref={ref}
-        onClick={e => console.log('click')}
-        onPointerOver={e => console.log('hover')}
-        onPointerOut={e => console.log('unhover')}
-      >
-        <planeBufferGeometry attach='geometry' args={[1, 1]} />
-        <meshBasicMaterial
-          attach='material'
-          color='hotpink'
-          opacity={0.5}
-          transparent
-        />
+      <mesh ref={ref} >
+        <boxGeometry attach='geometry' args={[400, 400, 400]} />
+        <meshNormalMaterial attach='material' />
       </mesh>
     );
   };
 
   export const Work = () => (
     <div css={theme}>
-      <Canvas>
+      <Canvas camera={{ position: [0, 0, 1000] }}>
         <Thing />
       </Canvas>
   </div>
