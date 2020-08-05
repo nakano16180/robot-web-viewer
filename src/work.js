@@ -1,11 +1,15 @@
 /** @jsx jsx */
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
-import React, { useEffect, useState } from 'react';
-import { Canvas, useFrame } from 'react-three-fiber';
+import React, { useRef, useEffect, useState } from 'react';
+import { Canvas, apply, useFrame, extend, useThree,} from 'react-three-fiber';
 import { css, jsx } from '@emotion/core';
 import { useCannon, Provider } from './useCannon';
 
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
+// Extend will make OrbitControls available as a JSX element called orbitControls for us to use.
+extend({ OrbitControls });
 
 const theme = css`
     width: 100vw;
@@ -13,26 +17,32 @@ const theme = css`
     background-color: #272727;
 `;
 
-const Plane = ({ position }) => {
-  const ref = useCannon({ mass: 0 }, body => {
-    body.addShape(new CANNON.Plane());
-    body.position.set(...position);
-  });
+const CameraControls = () => {
+  // Get a reference to the Three.js Camera, and the canvas html element.
+  // We need these to setup the OrbitControls component.
+  // https://threejs.org/docs/#examples/en/controls/OrbitControls
+  const {
+    camera,
+    gl: { domElement },
+  } = useThree();
+  // Ref to the controls, so that we can update them on every frame using useFrame
+  const controls = useRef();
+  useFrame((state) => controls.current.update());
+  return <orbitControls ref={controls} args={[camera, domElement]} />;
+};
+
+const Plane = ({ ...props }) => {
   return (
-    <mesh ref={ref} receiveShadow>
-      <planeBufferGeometry attach='geometry' args={[1000, 1000]} />
-      <meshPhongMaterial attach='material' color='#272727' />
+    <mesh {...props} receiveShadow>
+      <planeBufferGeometry attach='geometry' args={[40, 40]} />
+      <meshPhongMaterial attach='material' color='lightpink' />
     </mesh>
   );
 };
 
 const Box = ({ position, args }) => {
-  const ref = useCannon({ mass: 100000 }, body => {
-    body.addShape(new CANNON.Box(new CANNON.Vec3(1, 1, 1)));
-    body.position.set(...position);
-  });
   return (
-    <mesh ref={ref} castShadow receiveShadow>
+    <mesh castShadow receiveShadow>
       <boxGeometry attach='geometry' args={args} />
       <meshStandardMaterial attach='material' />
     </mesh>
@@ -41,7 +51,8 @@ const Box = ({ position, args }) => {
 
   export const Work = () => (
     <div css={theme}>
-      <Canvas camera={{ position: [0, 5, 15] }}>
+      <Canvas>
+        <CameraControls />
         <ambientLight intensity={0.5} />
         <spotLight
           intensity={0.6}
@@ -50,12 +61,8 @@ const Box = ({ position, args }) => {
           penumbra={1}
           castShadow
         />
-        <Provider>
-          <Plane position={[0, 0, -10]} />
-          <Box position={[1, 0, 1]} args={[2, 2, 2]} />
-          <Box position={[1, 0, 1]} args={[1, 1, 5]} />
-          <Box position={[2, 1, 5]} args={[3, 3, 3]} />
-        </Provider>
+        <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, -5, 0]} />
+        <Model />
       </Canvas>
   </div>
   )

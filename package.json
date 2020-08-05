@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@emotion/core": "^10.0.28",
+    "@nrk/custom-element-to-react": "^1.1.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -13,7 +14,8 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
     "react-three-fiber": "3.0.0-beta.13",
-    "three": "^0.119.1"
+    "three": "^0.119.1",
+    "urdf-loader": "^0.8.2"
   },
   "scripts": {
     "start": "react-scripts start",
