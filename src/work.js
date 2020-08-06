@@ -1,11 +1,12 @@
 /** @jsx jsx */
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, Suspense } from 'react';
 import { Canvas, apply, useFrame, extend, useThree,} from 'react-three-fiber';
 import { css, jsx } from '@emotion/core';
 import { useCannon, Provider } from './useCannon';
 
+import { Model } from './robot';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 // Extend will make OrbitControls available as a JSX element called orbitControls for us to use.
@@ -49,20 +50,22 @@ const Box = ({ position, args }) => {
   );
 };
 
-  export const Work = () => (
-    <div css={theme}>
-      <Canvas>
-        <CameraControls />
-        <ambientLight intensity={0.5} />
-        <spotLight
-          intensity={0.6}
-          position={[30, 30, 50]}
-          angle={0.2}
-          penumbra={1}
-          castShadow
-        />
-        <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, -5, 0]} />
+export const Work = () => (
+  <div css={theme}>
+    <Canvas>
+      <hemisphereLight skyColor={'#455A64'} groundColor={'#000'} intensity={0.5} position={[0, 1, 0]} />
+      <directionalLight
+        color={0xffffff}
+        position={[4, 10, 1]}
+        shadowMapWidth={2048}
+        shadowMapHeight={2048}
+        castShadow
+      />
+      <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, -5, 0]} scale={[10, 10, 10]} />
+      <CameraControls />
+      <Suspense fallback={null}>
         <Model />
-      </Canvas>
-  </div>
-  )
+      </Suspense>
+    </Canvas>
+</div>
+)
