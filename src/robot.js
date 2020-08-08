@@ -7,6 +7,7 @@ import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader.js';
 import URDFLoader from 'urdf-loader';
 
 const LoadModel = () => {
+  // loading robot model from urdf
   const robot = useLoader(URDFLoader, '/urdf/open_manipulator.URDF', loader => { 
     loader.loadMeshFunc = (path, manager, done) => {
       const ext = path.split(/\./g).pop().toLowerCase();
@@ -35,9 +36,11 @@ const LoadModel = () => {
     };
     loader.fetchOptions = { mode: 'cors', credentials: 'same-origin' };
   });
-  console.log(robot);
+  //console.log(robot);
   return (
-    <primitive object={robot[0]} dispose={null} />
+    <group rotation={[-0.5 * Math.PI, 0, 0]}>
+      <primitive object={robot[0]} dispose={null} />
+    </group>
   )
 }
 
