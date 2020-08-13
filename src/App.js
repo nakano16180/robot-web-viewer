@@ -1,26 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+/** @jsx jsx */
+import { css, jsx, Global } from '@emotion/core';
+import emotionReset from 'emotion-reset';
+import { Work } from './work';
 
-function App() {
+const globalStyles = css`
+    ${emotionReset}
+    *, *::after, *::before {
+        box-sizing: border-box;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-smoothing: antialiased;
+        font-smoothing: antialiased;
+    }
+`;
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Global styles={globalStyles} />
+      <Work />
     </div>
   );
-}
+};
 
 export default App;
