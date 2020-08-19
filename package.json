@@ -11,6 +11,7 @@
     "cannon": "^0.6.2",
     "drei": "^0.0.72",
     "emotion-reset": "^2.0.7",
+    "gh-pages": "^3.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
@@ -18,11 +19,14 @@
     "three": "^0.119.1",
     "urdf-loader": "^0.8.2"
   },
+  "homepage": "http://nakano16180.github.io/robot-web-viewer",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
