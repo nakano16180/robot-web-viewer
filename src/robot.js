@@ -35,7 +35,8 @@ ROS URDf
 
 const LoadModel = () => {
   // loading robot model from urdf
-  const robot = useLoader(URDFLoader, '/urdf/open_manipulator.URDF', loader => { 
+  // https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/{filepath}
+  const robot = useLoader(URDFLoader, 'https://raw.githubusercontent.com/nakano16180/robot-web-viewer/master/public/urdf/open_manipulator.URDF', loader => { 
     loader.loadMeshFunc = (path, manager, done) => {
       const ext = path.split(/\./g).pop().toLowerCase();
       switch (ext) {
@@ -61,7 +62,7 @@ const LoadModel = () => {
           break;
       }
     };
-    loader.fetchOptions = { mode: 'cors', credentials: 'same-origin' };
+    loader.fetchOptions = { headers: {'Accept': 'application/vnd.github.v3.raw'}};
   });
   //console.log(robot);
   return (
