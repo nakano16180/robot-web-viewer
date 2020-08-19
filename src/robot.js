@@ -6,9 +6,37 @@ import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader.js';
 import URDFLoader from 'urdf-loader';
 
+/*
+Reference coordinate frames for THREE.js and ROS.
+Both coordinate systems are right handed so the URDF is instantiated without
+frame transforms. The resulting model can be rotated to rectify the proper up,
+right, and forward directions
+
+THREE.js
+   Y
+   |
+   |
+   .-----X
+ ／
+Z
+
+   Z
+   |   Y
+   | ／
+   .-----X
+
+ROS URDf
+       Z
+       |   X
+       | ／
+ Y-----.
+
+*/
+
 const LoadModel = () => {
   // loading robot model from urdf
-  const robot = useLoader(URDFLoader, '/urdf/open_manipulator.URDF', loader => { 
+  // https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/{filepath}
+  const robot = useLoader(URDFLoader, 'https://raw.githubusercontent.com/nakano16180/robot-web-viewer/master/public/urdf/open_manipulator.URDF', loader => { 
     loader.loadMeshFunc = (path, manager, done) => {
       const ext = path.split(/\./g).pop().toLowerCase();
       switch (ext) {
@@ -34,11 +62,11 @@ const LoadModel = () => {
           break;
       }
     };
-    loader.fetchOptions = { mode: 'cors', credentials: 'same-origin' };
+    loader.fetchOptions = { headers: {'Accept': 'application/vnd.github.v3.raw'}};
   });
   //console.log(robot);
   return (
-    <group rotation={[-0.5 * Math.PI, 0, 0]}>
+    <group position={[0, 0, 0]} rotation={[-0.5 * Math.PI, 0, Math.PI]} scale={[10, 10, 10]}>
       <primitive object={robot[0]} dispose={null} />
     </group>
   )

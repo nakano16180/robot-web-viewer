@@ -1,10 +1,8 @@
 /** @jsx jsx */
 import * as THREE from 'three';
-import * as CANNON from 'cannon';
 import React, { useRef, useEffect, useState, Suspense } from 'react';
 import { Canvas, apply, useFrame, extend, useThree,} from 'react-three-fiber';
 import { css, jsx } from '@emotion/core';
-import { useCannon, Provider } from './useCannon';
 
 import { Model } from './robot';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -61,11 +59,12 @@ export const Work = () => (
         shadowMapHeight={2048}
         castShadow
       />
-      <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, -5, 0]} scale={[10, 10, 10]} />
+      <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, 0, 0]} />
       <CameraControls />
       <Suspense fallback={null}>
         <Model />
       </Suspense>
+      <gridHelper args={[0, 0, 0]} />
     </Canvas>
 </div>
 )
