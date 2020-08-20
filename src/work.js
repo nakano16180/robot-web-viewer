@@ -48,23 +48,34 @@ const Box = ({ position, args }) => {
   );
 };
 
-export const Work = () => (
-  <div css={theme}>
-    <Canvas>
-      <hemisphereLight skyColor={'#455A64'} groundColor={'#000'} intensity={0.5} position={[0, 1, 0]} />
-      <directionalLight
-        color={0xffffff}
-        position={[4, 10, 1]}
-        shadowMapWidth={2048}
-        shadowMapHeight={2048}
-        castShadow
-      />
-      <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, 0, 0]} />
-      <CameraControls />
-      <Suspense fallback={null}>
-        <Model />
-      </Suspense>
-      <gridHelper args={[0, 0, 0]} />
-    </Canvas>
-</div>
-)
+export const Work = ({ ...props }) => {
+  //console.log(props);
+  //console.log(props.qs);  // querystring
+  return (
+    <div css={theme}>
+      <Canvas camera={{ position: [0, 5, 10] }}>
+        <hemisphereLight skyColor={'#455A64'} groundColor={'#000'} intensity={0.5} position={[0, 1, 0]} />
+        <directionalLight
+          color={0xffffff}
+          position={[4, 10, 1]}
+          shadowMapWidth={2048}
+          shadowMapHeight={2048}
+          castShadow
+        />
+        <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, 0, 0]} />
+        <CameraControls />
+        {(() => {
+          if(props.qs.filepath){
+            return (
+              <Suspense fallback={null}>
+                <Model model={props.qs.filepath}/>
+              </Suspense>
+            );
+          }
+        })()}
+        <gridHelper args={[0, 0, 0]} />
+        <axesHelper />
+      </Canvas>
+    </div>
+  )
+};

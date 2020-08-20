@@ -13,11 +13,11 @@ const globalStyles = css`
     }
 `;
 
-const App = () => {
+const App = ({ ...props }) => {
   return (
     <div>
       <Global styles={globalStyles} />
-      <Work />
+      <Work { ...props}/>
     </div>
   );
 };
