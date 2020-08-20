@@ -50,7 +50,7 @@ const Box = ({ position, args }) => {
 
 export const Work = () => (
   <div css={theme}>
-    <Canvas>
+    <Canvas camera={{ position: [0, 5, 10] }}>
       <hemisphereLight skyColor={'#455A64'} groundColor={'#000'} intensity={0.5} position={[0, 1, 0]} />
       <directionalLight
         color={0xffffff}
@@ -65,6 +65,7 @@ export const Work = () => (
         <Model />
       </Suspense>
       <gridHelper args={[0, 0, 0]} />
+      <axesHelper />
     </Canvas>
 </div>
 )
