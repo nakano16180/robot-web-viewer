@@ -33,10 +33,10 @@ ROS URDf
 
 */
 
-const LoadModel = () => {
+const LoadModel = ({filepath}) => {
   // loading robot model from urdf
   // https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/{filepath}
-  const robot = useLoader(URDFLoader, 'https://raw.githubusercontent.com/nakano16180/robot-web-viewer/master/public/urdf/open_manipulator.URDF', loader => { 
+  const robot = useLoader(URDFLoader, filepath, loader => { 
     loader.loadMeshFunc = (path, manager, done) => {
       const ext = path.split(/\./g).pop().toLowerCase();
       switch (ext) {
@@ -75,7 +75,7 @@ const LoadModel = () => {
 export const Model = () => {
   return (
     <mesh>
-      <LoadModel />
+      <LoadModel filepath={'https://raw.githubusercontent.com/nakano16180/robot-web-viewer/master/public/urdf/open_manipulator.URDF'}/>
     </mesh>
   )
 }
