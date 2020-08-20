@@ -72,10 +72,12 @@ const LoadModel = ({filepath}) => {
   )
 }
 
-export const Model = () => {
+export const Model = ({ ...props }) => {
+  console.log(props);
+  console.log(props.model);
   return (
     <mesh>
-      <LoadModel filepath={'https://raw.githubusercontent.com/nakano16180/robot-web-viewer/master/public/urdf/open_manipulator.URDF'}/>
+      <LoadModel filepath={props.model}/>
     </mesh>
   )
 }
