@@ -17,6 +17,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-three-fiber": "^4.2.20",
+    "react-three-gui": "^0.2.0",
     "three": "^0.119.1",
     "urdf-loader": "^0.8.2"
   },
