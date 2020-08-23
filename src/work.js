@@ -5,10 +5,7 @@ import { Canvas, apply, useFrame, extend, useThree,} from 'react-three-fiber';
 import { css, jsx } from '@emotion/core';
 
 import { Model } from './robot';
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-
-// Extend will make OrbitControls available as a JSX element called orbitControls for us to use.
-extend({ OrbitControls });
+import { OrbitControls } from 'drei'
 
 const theme = css`
     width: 100vw;
@@ -16,24 +13,10 @@ const theme = css`
     background-color: #272727;
 `;
 
-const CameraControls = () => {
-  // Get a reference to the Three.js Camera, and the canvas html element.
-  // We need these to setup the OrbitControls component.
-  // https://threejs.org/docs/#examples/en/controls/OrbitControls
-  const {
-    camera,
-    gl: { domElement },
-  } = useThree();
-  // Ref to the controls, so that we can update them on every frame using useFrame
-  const controls = useRef();
-  useFrame((state) => controls.current.update());
-  return <orbitControls ref={controls} args={[camera, domElement]} />;
-};
-
 const Plane = ({ ...props }) => {
   return (
     <mesh {...props} receiveShadow>
-      <planeBufferGeometry attach='geometry' args={[40, 40]} />
+      <planeBufferGeometry attach='geometry' args={[10, 10]} />
       <meshPhongMaterial attach='material' color='lightpink' />
     </mesh>
   );
@@ -63,7 +46,7 @@ export const Work = ({ ...props }) => {
           castShadow
         />
         <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, 0, 0]} />
-        <CameraControls />
+        <OrbitControls />
         {(() => {
           if(props.qs.filepath){
             return (
