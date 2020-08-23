@@ -5,7 +5,8 @@ import { Canvas, apply, useFrame, extend, useThree,} from 'react-three-fiber';
 import { css, jsx } from '@emotion/core';
 
 import { Model } from './robot';
-import { OrbitControls } from 'drei'
+import { OrbitControls, TransformControls } from 'drei'
+import { Controls, useControl } from "react-three-gui"
 
 const theme = css`
     width: 100vw;
@@ -34,6 +35,23 @@ const Box = ({ position, args }) => {
 export const Work = ({ ...props }) => {
   //console.log(props);
   //console.log(props.qs);  // querystring
+  var modelpath = 'https://raw.githubusercontent.com/nakano16180/robot-web-viewer/master/public/urdf/open_manipulator.URDF';
+  if(props.qs.filepath){
+    modelpath = props.qs.filepath;
+  }
+  const orbit = useRef();
+  const transform = useRef();
+  const mode = useControl("mode", { type: "select", items: ["scale", "rotate", "translate"] });
+  useEffect(() => {
+    if (transform.current) {
+      const controls = transform.current
+      controls.setMode(mode)
+      const callback = event => (orbit.current.enabled = !event.value)
+      controls.addEventListener("dragging-changed", callback)
+      return () => controls.removeEventListener("dragging-changed", callback)
+    }
+  });
+
   return (
     <div css={theme}>
       <Canvas camera={{ position: [0, 5, 10] }}>
@@ -46,19 +64,16 @@ export const Work = ({ ...props }) => {
           castShadow
         />
         <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, 0, 0]} />
-        <OrbitControls />
-        {(() => {
-          if(props.qs.filepath){
-            return (
-              <Suspense fallback={null}>
-                <Model model={props.qs.filepath}/>
-              </Suspense>
-            );
-          }
-        })()}
+        <Suspense fallback={null}>
+          <TransformControls ref={transform}>
+            <Model model={modelpath}/>
+          </TransformControls>
+          <OrbitControls ref={orbit} />
+        </Suspense>
         <gridHelper args={[0, 0, 0]} />
         <axesHelper />
       </Canvas>
+      <Controls />
     </div>
   )
 };
