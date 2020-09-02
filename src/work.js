@@ -25,29 +25,70 @@ const Plane = ({ ...props }) => {
   );
 };
 
-const Box = ({ position, args }) => {
-  return (
-    <mesh castShadow receiveShadow>
-      <boxGeometry attach='geometry' args={args} />
-      <meshStandardMaterial attach='material' />
-    </mesh>
-  );
+const mouse = new THREE.Vector2();
+const raycaster = new THREE.Raycaster();
+
+const toMouseCoord = (el, e, v) => {
+  v.x = ((e.pageX - el.offsetLeft) / el.offsetWidth) * 2 - 1;
+  v.y = -((e.pageY - el.offsetTop) / el.offsetHeight) * 2 + 1;
 };
 
-const GetAngles = (robot) => {
-  const angles = {};
-  if (robot) {
-      for (const name in robot.joints) angles[name] = robot.joints[name].angle;
-  }
+// Get which part of the robot is hit by the mouse click
+const getCollisions = (camera, robot, mouse) => {
+  if (!robot) return [];
 
-  return angles;
-}
+  raycaster.setFromCamera(mouse, camera);
+
+  const meshes = [];
+  robot.traverse(c => c.type === 'Mesh' && meshes.push(c));
+
+  return raycaster.intersectObjects(meshes);
+};
 
 const isJoint = j => {
   return j.isURDFJoint && j.jointType !== 'fixed';
 };
 
+// Find the nearest parent that is a joint
+const findNearestJoint = m => {
+  let curr = m;
+  while (curr) {
+      if (isJoint(curr)) {
+          break;
+      }
+      curr = curr.parent;
+  }
+  return curr;
+};
+
 const LoadModel = ({ filepath }) => {
+  const [hovered, setHovered] = React.useState(null);
+  const { camera, gl } = useThree();
+  
+  // loading robot model from urdf
+  // https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/{filepath}
+  const ref = useRef()
+  const robot = useLoader(URDFLoader, filepath, loader => { 
+    loader.loadMeshFunc = (path, manager, done) => {
+      const ext = path.split(/\./g).pop().toLowerCase();
+      switch (ext) {
+        case 'stl':
+          new STLLoader(manager).load(
+            path,
+            result => {
+              const material = new THREE.MeshPhongMaterial();
+              const mesh = new THREE.Mesh(result, material);
+              done(mesh);
+            },
+            null,
+            err => done(null, err)
+          );
+          break;
+      }
+    };
+    loader.fetchOptions = { headers: {'Accept': 'application/vnd.github.v3.raw'}};
+  });
+
   // The highlight material
   const highlightMaterial =
     new THREE.MeshPhongMaterial({
@@ -82,57 +123,29 @@ const LoadModel = ({ filepath }) => {
     traverse(m);
   };
 
-  // loading robot model from urdf
-  // https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/{filepath}
-  const ref = useRef()
-  const robot = useLoader(URDFLoader, filepath, loader => { 
-    loader.loadMeshFunc = (path, manager, done) => {
-      const ext = path.split(/\./g).pop().toLowerCase();
-      switch (ext) {
-        case 'stl':
-          new STLLoader(manager).load(
-            path,
-            result => {
-              const material = new THREE.MeshPhongMaterial();
-              const mesh = new THREE.Mesh(result, material);
-              done(mesh);
-            },
-            null,
-            err => done(null, err)
-          );
-          break;
+  const onMouseMove = (event) => {
+    toMouseCoord(gl.domElement, event, mouse);
+    const collision = getCollisions(camera, robot, mouse).shift() || null;
+    const joint = collision && findNearestJoint(collision.object);
+
+    if (joint !== hovered){
+      if (hovered){
+        //console.log("pointer out");
+        highlightLinkGeometry(hovered, true);
+        setHovered(null);
       }
-    };
-    loader.fetchOptions = { headers: {'Accept': 'application/vnd.github.v3.raw'}};
-  });
+      if(joint){
+        //console.log("pointer over");
+        highlightLinkGeometry(joint, false);
+        setHovered(joint);
+      }
+    }
+  }
+
   // get URDFJoint
   //const robotJoints = useMemo(() => Object.keys(robot.joints).map(jointName => robot.joints[jointName].setAngle(robot.joints[jointName].angle)), [robot] )
-  const robotJoints = useMemo(() => Object.keys(robot.joints).map(jointName => robot.joints[jointName]), [robot] )
-  console.log(robotJoints);
-
-  /*
-  Object.keys(robot.joints)
-    .sort((a, b) => {
-      const da = a.split(/[^\d]+/g).filter(v => !!v).pop();
-      const db = b.split(/[^\d]+/g).filter(v => !!v).pop();
-
-      if (da !== undefined && db !== undefined) {
-        const delta = parseFloat(da) - parseFloat(db);
-        if (delta !== 0) return delta;
-      }
-
-      if (a > b) return 1;
-      if (b > a) return -1;
-      return 0;
-    })
-    .map(key => robot.joints[key])
-    .forEach(joint => {
-      var angle = useControl(joint.name, {type: 'number', spring: true});
-      robot.setAngle(joint.name, angle);
-    })
-  */
-
-  //useFrame(()=>{console.log(ref.current)})
+  //const robotJoints = useMemo(() => Object.keys(robot.joints).map(jointName => robot.joints[jointName]), [robot] )
+  //console.log(robotJoints);
 
   return (
     <primitive 
@@ -142,14 +155,13 @@ const LoadModel = ({ filepath }) => {
       rotation={[-0.5 * Math.PI, 0, Math.PI]} 
       scale={[10, 10, 10]} 
       dispose={null} 
-      onPointerOver={(e) => highlightLinkGeometry(e.object, false)}
-      onPointerOut={(e) => highlightLinkGeometry(e.object, true)}
+      onPointerMove={(e) => onMouseMove(e)}
+      //onPointerOver={(e) => highlightLinkGeometry(e.object, false)}
+      onPointerOut={(e) => {
+        highlightLinkGeometry(hovered, true);
+        setHovered(null);
+      }}
     />
-    //<group>
-    //  {robotJoints.map(joint => (
-    //    <primitive object={joint} rotation={[-0.5 * Math.PI, 0, Math.PI]} scale={[10, 10, 10]} dispose={null} />
-    //  ))}
-    //</group>
   )
 }
 
