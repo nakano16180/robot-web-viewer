@@ -97,6 +97,13 @@ const LoadModel = ({ filepath }) => {
       headers: { Accept: "application/vnd.github.v3.raw" }
     };
   });
+  let robotJointName = [];
+  robotJointName = useMemo(() => Object.keys(robot.joints), [robot]);
+
+  let jointName = useControl("jointName", {
+    type: "select",
+    items: robotJointName
+  });
 
   // The highlight material
   const highlightMaterial = new THREE.MeshPhongMaterial({
