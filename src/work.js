@@ -104,6 +104,15 @@ const LoadModel = ({ filepath }) => {
     type: "select",
     items: robotJointName
   });
+  let jointAngle = useControl("jointAngle", {
+    type: "number",
+    value: robot.joints[jointName].angle,
+    min: -6.28,
+    max: 6.28,
+    onChange: e => {
+      robot.joints[jointName].setAngle(e);
+    }
+  });
 
   // The highlight material
   const highlightMaterial = new THREE.MeshPhongMaterial({
