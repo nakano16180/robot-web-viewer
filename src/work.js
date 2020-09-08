@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import * as THREE from "three";
-import React, { useRef, useEffect, useState, Suspense, useMemo } from "react";
-import { Canvas, useLoader, useThree, useFrame } from "react-three-fiber";
+import React, { useRef, useEffect, Suspense, useMemo } from "react";
+import { Canvas, useLoader, useThree } from "react-three-fiber";
 import { css, jsx } from "@emotion/core";
 import { a } from "@react-spring/three";
 
@@ -104,7 +104,7 @@ const LoadModel = ({ filepath }) => {
     type: "select",
     items: robotJointName
   });
-  let jointAngle = useControl("jointAngle", {
+  useControl("jointAngle", {
     type: "number",
     value: robot.joints[jointName].angle,
     min: -6.28,
