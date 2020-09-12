@@ -17,6 +17,33 @@ const theme = css`
   background-color: #272727;
 `;
 
+/*
+Reference coordinate frames for THREE.js and ROS.
+Both coordinate systems are right handed so the URDF is instantiated without
+frame transforms. The resulting model can be rotated to rectify the proper up,
+right, and forward directions
+
+THREE.js
+   Y
+   |
+   |
+   .-----X
+ ／
+Z
+
+   Z
+   |   Y
+   | ／
+   .-----X
+
+ROS URDf
+       Z
+       |   X
+       | ／
+ Y-----.
+
+*/
+
 const Plane = ({ ...props }) => {
   return (
     <mesh {...props} receiveShadow>
