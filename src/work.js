@@ -44,15 +44,6 @@ ROS URDf
 
 */
 
-const Plane = ({ ...props }) => {
-  return (
-    <mesh {...props} receiveShadow>
-      <planeBufferGeometry attach="geometry" args={[10, 10]} />
-      <meshPhongMaterial attach="material" color="lightpink" />
-    </mesh>
-  );
-};
-
 const mouse = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
 
@@ -101,24 +92,16 @@ const LoadModel = ({ filepath }) => {
   const ref = useRef();
   const robot = useLoader(URDFLoader, filepath, loader => {
     loader.loadMeshFunc = (path, manager, done) => {
-      const ext = path
-        .split(/\./g)
-        .pop()
-        .toLowerCase();
-      switch (ext) {
-        case "stl":
-          new STLLoader(manager).load(
-            path,
-            result => {
-              const material = new THREE.MeshPhongMaterial();
-              const mesh = new THREE.Mesh(result, material);
-              done(mesh);
-            },
-            null,
-            err => done(null, err)
-          );
-          break;
-      }
+      new STLLoader(manager).load(
+        path,
+        result => {
+          const material = new THREE.MeshPhongMaterial();
+          const mesh = new THREE.Mesh(result, material);
+          done(mesh);
+        },
+        null,
+        err => done(null, err)
+      );
     };
     loader.fetchOptions = {
       headers: { Accept: "application/vnd.github.v3.raw" }
@@ -263,7 +246,6 @@ export const Work = ({ ...props }) => {
           shadowMapHeight={2048}
           castShadow
         />
-        <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, 0, 0]} />
         <Suspense fallback={null}>
           <TransformControls ref={transform} mode={mode}>
             <LoadModel filepath={modelpath} />
