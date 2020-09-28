@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import * as THREE from "three";
-import React, { useRef, useEffect, useState, Suspense, useMemo } from "react";
-import { Canvas, useLoader, useThree, useFrame } from "react-three-fiber";
+import React, { useRef, useEffect, Suspense, useMemo } from "react";
+import { Canvas, useLoader, useThree } from "react-three-fiber";
 import { css, jsx } from "@emotion/core";
 import { a } from "@react-spring/three";
 
@@ -17,14 +17,32 @@ const theme = css`
   background-color: #272727;
 `;
 
-const Plane = ({ ...props }) => {
-  return (
-    <mesh {...props} receiveShadow>
-      <planeBufferGeometry attach="geometry" args={[10, 10]} />
-      <meshPhongMaterial attach="material" color="lightpink" />
-    </mesh>
-  );
-};
+/*
+Reference coordinate frames for THREE.js and ROS.
+Both coordinate systems are right handed so the URDF is instantiated without
+frame transforms. The resulting model can be rotated to rectify the proper up,
+right, and forward directions
+
+THREE.js
+   Y
+   |
+   |
+   .-----X
+ ／
+Z
+
+   Z
+   |   Y
+   | ／
+   .-----X
+
+ROS URDf
+       Z
+       |   X
+       | ／
+ Y-----.
+
+*/
 
 const mouse = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
@@ -74,24 +92,16 @@ const LoadModel = ({ filepath }) => {
   const ref = useRef();
   const robot = useLoader(URDFLoader, filepath, loader => {
     loader.loadMeshFunc = (path, manager, done) => {
-      const ext = path
-        .split(/\./g)
-        .pop()
-        .toLowerCase();
-      switch (ext) {
-        case "stl":
-          new STLLoader(manager).load(
-            path,
-            result => {
-              const material = new THREE.MeshPhongMaterial();
-              const mesh = new THREE.Mesh(result, material);
-              done(mesh);
-            },
-            null,
-            err => done(null, err)
-          );
-          break;
-      }
+      new STLLoader(manager).load(
+        path,
+        result => {
+          const material = new THREE.MeshPhongMaterial();
+          const mesh = new THREE.Mesh(result, material);
+          done(mesh);
+        },
+        null,
+        err => done(null, err)
+      );
     };
     loader.fetchOptions = {
       headers: { Accept: "application/vnd.github.v3.raw" }
@@ -104,7 +114,7 @@ const LoadModel = ({ filepath }) => {
     type: "select",
     items: robotJointName
   });
-  let jointAngle = useControl("jointAngle", {
+  useControl("jointAngle", {
     type: "number",
     value: robot.joints[jointName].angle,
     min: -6.28,
@@ -236,7 +246,6 @@ export const Work = ({ ...props }) => {
           shadowMapHeight={2048}
           castShadow
         />
-        <Plane rotation={[-0.5 * Math.PI, 0, 0]} position={[0, 0, 0]} />
         <Suspense fallback={null}>
           <TransformControls ref={transform} mode={mode}>
             <LoadModel filepath={modelpath} />
