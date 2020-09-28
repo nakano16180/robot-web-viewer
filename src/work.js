@@ -206,14 +206,12 @@ const LoadModel = ({ filepath }) => {
   );
 };
 
-export const Work = ({ ...props }) => {
+export const Work = () => {
   //console.log(props);
   //console.log(props.qs);  // querystring
   var modelpath =
     "https://raw.githubusercontent.com/nakano16180/robot-web-viewer/master/public/urdf/open_manipulator.URDF";
-  if (props.qs.filepath) {
-    modelpath = props.qs.filepath;
-  }
+
   const orbit = useRef();
   const transform = useRef();
   const mode = useControl("mode", {
