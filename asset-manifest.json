@@ -4,16 +4,16 @@
     "main.js.map": "/robot-web-viewer/static/js/main.73835360.chunk.js.map",
     "runtime-main.js": "/robot-web-viewer/static/js/runtime-main.22800191.js",
     "runtime-main.js.map": "/robot-web-viewer/static/js/runtime-main.22800191.js.map",
-    "static/js/2.60d2e963.chunk.js": "/robot-web-viewer/static/js/2.60d2e963.chunk.js",
-    "static/js/2.60d2e963.chunk.js.map": "/robot-web-viewer/static/js/2.60d2e963.chunk.js.map",
+    "static/js/2.08927f7d.chunk.js": "/robot-web-viewer/static/js/2.08927f7d.chunk.js",
+    "static/js/2.08927f7d.chunk.js.map": "/robot-web-viewer/static/js/2.08927f7d.chunk.js.map",
     "index.html": "/robot-web-viewer/index.html",
-    "precache-manifest.60ec5c37faaf683acf1d79e17b419bb3.js": "/robot-web-viewer/precache-manifest.60ec5c37faaf683acf1d79e17b419bb3.js",
+    "precache-manifest.05140817e8b641fdeb6ff7092c6d40de.js": "/robot-web-viewer/precache-manifest.05140817e8b641fdeb6ff7092c6d40de.js",
     "service-worker.js": "/robot-web-viewer/service-worker.js",
-    "static/js/2.60d2e963.chunk.js.LICENSE.txt": "/robot-web-viewer/static/js/2.60d2e963.chunk.js.LICENSE.txt"
+    "static/js/2.08927f7d.chunk.js.LICENSE.txt": "/robot-web-viewer/static/js/2.08927f7d.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.22800191.js",
-    "static/js/2.60d2e963.chunk.js",
+    "static/js/2.08927f7d.chunk.js",
     "static/js/main.73835360.chunk.js"
   ]
 }
