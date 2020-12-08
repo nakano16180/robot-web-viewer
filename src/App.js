@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { css, jsx, Global } from "@emotion/core";
 import emotionReset from "emotion-reset";
-import { Work } from "./work";
+import { Work } from "./Work";
 
 const globalStyles = css`
   ${emotionReset}
