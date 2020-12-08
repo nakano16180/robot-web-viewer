@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import * as THREE from "three";
-import React, { useRef, useEffect, Suspense, useMemo } from "react";
+import React, { useRef, useEffect, Suspense } from "react";
 import { Canvas, useLoader, useThree } from "react-three-fiber";
 import { css, jsx } from "@emotion/core";
 import { a } from "@react-spring/three";
@@ -83,9 +83,6 @@ const findNearestJoint = m => {
 const LoadModel = ({ filepath }) => {
   const [hovered, setHovered] = React.useState(null);
   const { camera, gl } = useThree();
-  const posX = useControl("Pos X", { type: "number", spring: true });
-  const posY = useControl("Pos Y", { type: "number", spring: true });
-  const posZ = useControl("Pos Z", { type: "number", spring: true });
 
   // loading robot model from urdf
   // https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/{filepath}
@@ -106,22 +103,6 @@ const LoadModel = ({ filepath }) => {
     loader.fetchOptions = {
       headers: { Accept: "application/vnd.github.v3.raw" }
     };
-  });
-  let robotJointName = [];
-  robotJointName = useMemo(() => Object.keys(robot.joints), [robot]);
-
-  let jointName = useControl("jointName", {
-    type: "select",
-    items: robotJointName
-  });
-  useControl("jointAngle", {
-    type: "number",
-    value: robot.joints[jointName].angle,
-    min: -6.28,
-    max: 6.28,
-    onChange: e => {
-      robot.joints[jointName].setAngle(e);
-    }
   });
 
   // The highlight material
@@ -183,9 +164,6 @@ const LoadModel = ({ filepath }) => {
 
   return (
     <a.mesh
-      position-x={posX}
-      position-y={posY}
-      position-z={posZ}
       rotation={[-0.5 * Math.PI, 0, Math.PI]}
       scale={[10, 10, 10]}
     >
@@ -193,9 +171,8 @@ const LoadModel = ({ filepath }) => {
         ref={ref}
         object={robot}
         dispose={null}
-        onPointerMove={e => onMouseMove(e)}
-        //onPointerOver={(e) => highlightLinkGeometry(e.object, false)}
-        onPointerOut={e => {
+        onPointerMove={onMouseMove}
+        onPointerOut={() => {
           if (hovered) {
             highlightLinkGeometry(hovered, true);
             setHovered(null);
