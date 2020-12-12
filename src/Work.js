@@ -3,7 +3,7 @@
 import * as THREE from "three";
 import React, { useRef, useEffect, Suspense } from "react";
 import { Canvas, useLoader, useThree } from "react-three-fiber";
-import { css, jsx } from "@emotion/core";
+import { css, jsx } from "@emotion/react";
 import { a } from "@react-spring/three";
 
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";

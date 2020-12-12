@@ -1,11 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { css, jsx, Global } from "@emotion/core";
-import emotionReset from "emotion-reset";
+import { css, jsx, Global } from "@emotion/react";
 import { Work } from "./Work";
 
 const globalStyles = css`
-  ${emotionReset}
   *, *::after, *::before {
     box-sizing: border-box;
     -moz-osx-font-smoothing: grayscale;
