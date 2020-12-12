@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import * as THREE from "three";
 import React, { useRef, useEffect, Suspense } from "react";
