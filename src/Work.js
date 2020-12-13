@@ -1,15 +1,15 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import * as THREE from "three";
-import React, { useRef, useEffect, Suspense, useMemo } from "react";
+import React, { useRef, Suspense } from "react";
 import { Canvas, useLoader, useThree } from "react-three-fiber";
-import { css, jsx } from "@emotion/core";
+import { css, jsx } from "@emotion/react";
 import { a } from "@react-spring/three";
 
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import URDFLoader from "urdf-loader";
 
-import { OrbitControls, TransformControls } from "drei";
-import { Controls, useControl } from "react-three-gui";
+import { OrbitControls } from "drei";
 
 const theme = css`
   width: 100vw;
@@ -83,9 +83,6 @@ const findNearestJoint = m => {
 const LoadModel = ({ filepath }) => {
   const [hovered, setHovered] = React.useState(null);
   const { camera, gl } = useThree();
-  const posX = useControl("Pos X", { type: "number", spring: true });
-  const posY = useControl("Pos Y", { type: "number", spring: true });
-  const posZ = useControl("Pos Z", { type: "number", spring: true });
 
   // loading robot model from urdf
   // https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/{filepath}
@@ -106,22 +103,6 @@ const LoadModel = ({ filepath }) => {
     loader.fetchOptions = {
       headers: { Accept: "application/vnd.github.v3.raw" }
     };
-  });
-  let robotJointName = [];
-  robotJointName = useMemo(() => Object.keys(robot.joints), [robot]);
-
-  let jointName = useControl("jointName", {
-    type: "select",
-    items: robotJointName
-  });
-  useControl("jointAngle", {
-    type: "number",
-    value: robot.joints[jointName].angle,
-    min: -6.28,
-    max: 6.28,
-    onChange: e => {
-      robot.joints[jointName].setAngle(e);
-    }
   });
 
   // The highlight material
@@ -183,9 +164,7 @@ const LoadModel = ({ filepath }) => {
 
   return (
     <a.mesh
-      position-x={posX}
-      position-y={posY}
-      position-z={posZ}
+      position={[0, 0, 0]}
       rotation={[-0.5 * Math.PI, 0, Math.PI]}
       scale={[10, 10, 10]}
     >
@@ -193,9 +172,8 @@ const LoadModel = ({ filepath }) => {
         ref={ref}
         object={robot}
         dispose={null}
-        onPointerMove={e => onMouseMove(e)}
-        //onPointerOver={(e) => highlightLinkGeometry(e.object, false)}
-        onPointerOut={e => {
+        onPointerMove={onMouseMove}
+        onPointerOut={() => {
           if (hovered) {
             highlightLinkGeometry(hovered, true);
             setHovered(null);
@@ -211,22 +189,6 @@ export const Work = () => {
   //console.log(props.qs);  // querystring
   var modelpath =
     "https://raw.githubusercontent.com/nakano16180/robot-web-viewer/master/public/urdf/open_manipulator.URDF";
-
-  const orbit = useRef();
-  const transform = useRef();
-  const mode = useControl("mode", {
-    type: "select",
-    items: ["translate", "rotate"]
-  });
-  useEffect(() => {
-    if (transform.current) {
-      const controls = transform.current;
-      controls.setMode(mode);
-      const callback = event => (orbit.current.enabled = !event.value);
-      controls.addEventListener("dragging-changed", callback);
-      return () => controls.removeEventListener("dragging-changed", callback);
-    }
-  });
 
   return (
     <div css={theme}>
@@ -245,15 +207,12 @@ export const Work = () => {
           castShadow
         />
         <Suspense fallback={null}>
-          <TransformControls ref={transform} mode={mode}>
-            <LoadModel filepath={modelpath} />
-          </TransformControls>
-          <OrbitControls ref={orbit} />
+          <LoadModel filepath={modelpath} />
+          <OrbitControls />
         </Suspense>
         <gridHelper args={[0, 0, 0]} />
         <axesHelper />
       </Canvas>
-      <Controls />
     </div>
   );
 };
