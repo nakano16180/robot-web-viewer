@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import * as THREE from "three";
-import React, { useRef, useEffect, Suspense } from "react";
+import React, { useRef, Suspense } from "react";
 import { Canvas, useLoader, useThree } from "react-three-fiber";
 import { css, jsx } from "@emotion/react";
 import { a } from "@react-spring/three";
@@ -9,7 +9,7 @@ import { a } from "@react-spring/three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import URDFLoader from "urdf-loader";
 
-import { OrbitControls, TransformControls } from "drei";
+import { OrbitControls } from "drei";
 
 const theme = css`
   width: 100vw;
