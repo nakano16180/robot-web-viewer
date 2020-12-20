@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.js": "/robot-web-viewer/static/js/main.1e423434.chunk.js",
-    "main.js.map": "/robot-web-viewer/static/js/main.1e423434.chunk.js.map",
+    "main.js": "/robot-web-viewer/static/js/main.816763a0.chunk.js",
+    "main.js.map": "/robot-web-viewer/static/js/main.816763a0.chunk.js.map",
     "runtime-main.js": "/robot-web-viewer/static/js/runtime-main.565959c5.js",
     "runtime-main.js.map": "/robot-web-viewer/static/js/runtime-main.565959c5.js.map",
-    "static/js/2.d772275e.chunk.js": "/robot-web-viewer/static/js/2.d772275e.chunk.js",
-    "static/js/2.d772275e.chunk.js.map": "/robot-web-viewer/static/js/2.d772275e.chunk.js.map",
+    "static/js/2.07faaf7e.chunk.js": "/robot-web-viewer/static/js/2.07faaf7e.chunk.js",
+    "static/js/2.07faaf7e.chunk.js.map": "/robot-web-viewer/static/js/2.07faaf7e.chunk.js.map",
     "index.html": "/robot-web-viewer/index.html",
-    "static/js/2.d772275e.chunk.js.LICENSE.txt": "/robot-web-viewer/static/js/2.d772275e.chunk.js.LICENSE.txt"
+    "static/js/2.07faaf7e.chunk.js.LICENSE.txt": "/robot-web-viewer/static/js/2.07faaf7e.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.565959c5.js",
-    "static/js/2.d772275e.chunk.js",
-    "static/js/main.1e423434.chunk.js"
+    "static/js/2.07faaf7e.chunk.js",
+    "static/js/main.816763a0.chunk.js"
   ]
 }
