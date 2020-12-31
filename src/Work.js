@@ -4,7 +4,6 @@ import * as THREE from "three";
 import React, { useRef, Suspense } from "react";
 import { Canvas, useLoader, useThree } from "react-three-fiber";
 import { css, jsx } from "@emotion/react";
-import { a } from "@react-spring/three";
 
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import URDFLoader from "urdf-loader";
@@ -157,13 +156,8 @@ const LoadModel = ({ filepath }) => {
     }
   };
 
-  // get URDFJoint
-  //const robotJoints = useMemo(() => Object.keys(robot.joints).map(jointName => robot.joints[jointName].setAngle(robot.joints[jointName].angle)), [robot] )
-  //const robotJoints = useMemo(() => Object.keys(robot.joints).map(jointName => robot.joints[jointName]), [robot] )
-  //console.log(robotJoints);
-
   return (
-    <a.mesh
+    <mesh
       position={[0, 0, 0]}
       rotation={[-0.5 * Math.PI, 0, Math.PI]}
       scale={[10, 10, 10]}
@@ -180,7 +174,7 @@ const LoadModel = ({ filepath }) => {
           }
         }}
       />
-    </a.mesh>
+    </mesh>
   );
 };
 
@@ -208,8 +202,8 @@ export const Work = () => {
         />
         <Suspense fallback={null}>
           <LoadModel filepath={modelpath} />
-          <OrbitControls />
         </Suspense>
+        <OrbitControls />
         <gridHelper args={[0, 0, 0]} />
         <axesHelper />
       </Canvas>
