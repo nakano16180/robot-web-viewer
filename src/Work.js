@@ -5,8 +5,7 @@ import React, { useRef, Suspense } from "react";
 import { Canvas, useLoader, useThree } from "react-three-fiber";
 import { css, jsx } from "@emotion/react";
 
-import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
-import URDFLoader from "urdf-loader";
+import {ModelLoader} from "./LoadModel.js";
 
 import { OrbitControls } from "drei";
 
@@ -79,30 +78,14 @@ const findNearestJoint = m => {
   return curr;
 };
 
-const LoadModel = ({ filepath }) => {
+const LoadRobotModel = ({ filepath }) => {
   const [hovered, setHovered] = React.useState(null);
   const { camera, gl } = useThree();
 
   // loading robot model from urdf
   // https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/{filepath}
   const ref = useRef();
-  const robot = useLoader(URDFLoader, filepath, loader => {
-    loader.loadMeshFunc = (path, manager, done) => {
-      new STLLoader(manager).load(
-        path,
-        result => {
-          const material = new THREE.MeshPhongMaterial();
-          const mesh = new THREE.Mesh(result, material);
-          done(mesh);
-        },
-        null,
-        err => done(null, err)
-      );
-    };
-    loader.fetchOptions = {
-      headers: { Accept: "application/vnd.github.v3.raw" }
-    };
-  });
+  const robot = useLoader(ModelLoader, filepath);
 
   // The highlight material
   const highlightMaterial = new THREE.MeshPhongMaterial({
@@ -182,7 +165,7 @@ export const Work = () => {
   //console.log(props);
   //console.log(props.qs);  // querystring
   var modelpath =
-    "https://raw.githubusercontent.com/nakano16180/robot-web-viewer/master/public/urdf/open_manipulator.URDF";
+    "https://raw.githubusercontent.com/gkjohnson/curiosity_mars_rover-mirror/master/curiosity_mars_rover_description/urdf/curiosity_mars_rover.xacro";
 
   return (
     <div css={theme}>
@@ -193,15 +176,8 @@ export const Work = () => {
           intensity={0.5}
           position={[0, 1, 0]}
         />
-        <directionalLight
-          color={0xffffff}
-          position={[4, 10, 1]}
-          shadowMapWidth={2048}
-          shadowMapHeight={2048}
-          castShadow
-        />
         <Suspense fallback={null}>
-          <LoadModel filepath={modelpath} />
+          <LoadRobotModel filepath={modelpath} />
         </Suspense>
         <OrbitControls />
         <gridHelper args={[0, 0, 0]} />
