@@ -9,21 +9,12 @@ export class ModelLoader extends XacroParser {
     this.fetchOptions = {
       headers: { Accept: "application/vnd.github.v3.raw" }
     };
-    this.rospackCommands = {
-      find( pkg ) {
-        switch ( pkg ) {
-          case 'curiosity_mars_rover_description':
-            return 'https://raw.githubusercontent.com/gkjohnson/curiosity_mars_rover-mirror/master/curiosity_mars_rover_description/';
-          default:
-            return pkg;
-        }
-      }
-    };
+    this.packages = {};
+    this.rospackCommands = {};
   }
 
   load(url, onComplete, onError) {
     const workingPath = LoaderUtils.extractUrlBase( url );
-    console.log(workingPath);
 
     this
       .getFileContents(url)
@@ -45,9 +36,7 @@ export class ModelLoader extends XacroParser {
       .parse(data)
       .then(xml => {
         const urdfLoader = new URDFLoader();
-        urdfLoader.packages = {
-          'curiosity_mars_rover_description': 'https://raw.githubusercontent.com/gkjohnson/curiosity_mars_rover-mirror/master/curiosity_mars_rover_description/'
-        };
+        urdfLoader.packages = this.packages;
         const robot = urdfLoader.parse( xml );
         onComplete(robot);
       })
