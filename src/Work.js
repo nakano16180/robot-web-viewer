@@ -85,7 +85,21 @@ const LoadRobotModel = ({ filepath }) => {
   // loading robot model from urdf
   // https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/{filepath}
   const ref = useRef();
-  const robot = useLoader(ModelLoader, filepath);
+  const robot = useLoader(ModelLoader, filepath, loader => {
+    loader.rospackCommands = {
+      find( pkg ) {
+        switch ( pkg ) {
+          case 'open_manipulator_description':
+            return 'https://raw.githubusercontent.com/ROBOTIS-GIT/open_manipulator/master/open_manipulator_description/';
+          default:
+            return pkg;
+        }
+      }
+    };
+    loader.packages = {
+      'open_manipulator_description' : 'https://raw.githubusercontent.com/ROBOTIS-GIT/open_manipulator/master/open_manipulator_description/'
+    }
+  });
 
   // The highlight material
   const highlightMaterial = new THREE.MeshPhongMaterial({
@@ -165,7 +179,7 @@ export const Work = () => {
   //console.log(props);
   //console.log(props.qs);  // querystring
   var modelpath =
-    "https://raw.githubusercontent.com/gkjohnson/curiosity_mars_rover-mirror/master/curiosity_mars_rover_description/urdf/curiosity_mars_rover.xacro";
+    "https://raw.githubusercontent.com/ROBOTIS-GIT/open_manipulator/master/open_manipulator_description/urdf/open_manipulator_robot.urdf.xacro";
 
   return (
     <div css={theme}>
